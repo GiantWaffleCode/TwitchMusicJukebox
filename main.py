@@ -4,12 +4,14 @@ from twitchAPI.twitch import Twitch
 from twitchAPI.helper import first
 from twitchAPI.oauth import UserAuthenticator
 from twitchAPI.type import AuthScope
-from twitchAPI.oauth import UserAuthenticationStorageHelper
 from twitchAPI.object.eventsub import ChannelPointsCustomRewardRedemptionAddEvent
 from twitchAPI.eventsub.websocket import EventSubWebsocket
 import asyncio
-from pprint import pprint
-from uuid import UUID
+import vlc
+import time
+
+#Globals
+PLAYER_ACTIVE = False
 
 #Auth System
 async def auth():
@@ -28,6 +30,7 @@ async def auth():
 
 async def redem_callback(data: ChannelPointsCustomRewardRedemptionAddEvent):
     print(f'{data.event.user_name} redeemed {data.event.reward.title}')
+    video("songs/Sweden.mp3")
 
 
 async def event_sub_example(twitch):
@@ -46,6 +49,26 @@ async def event_sub_example(twitch):
         # stopping both eventsub as well as gracefully closing the connection to the API
         await eventsub.stop()
         await twitch.close()
+
+def video(source):
+    global PLAYER_ACTIVE
+    # creating a vlc instance
+    if not PLAYER_ACTIVE:
+        vlc_instance = vlc.Instance()
+        # creating a media player
+        player = vlc_instance.media_player_new()
+        # creating a media
+        media = vlc_instance.media_new(source)
+        # setting media to the player
+        player.set_media(media)
+        # play the video
+        player.play()
+        #set player global as active
+        PLAYER_ACTIVE = True
+
+        #get length of song and set event to flip active player bool
+        time.sleep(0.5)
+        duration = player.get_length()
 
 
 #Auth with Twitch
