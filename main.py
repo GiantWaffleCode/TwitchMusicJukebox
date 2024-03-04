@@ -9,6 +9,8 @@ from twitchAPI.eventsub.websocket import EventSubWebsocket
 import asyncio
 import vlc
 import time
+import glob
+import gradio
 
 #Globals
 PLAYER_ACTIVE = False
@@ -30,7 +32,7 @@ async def auth():
 
 async def redem_callback(data: ChannelPointsCustomRewardRedemptionAddEvent):
     print(f'{data.event.user_name} redeemed {data.event.reward.title}')
-    video("songs/Sweden.mp3")
+    video(filenames[0])
 
 
 async def event_sub_example(twitch):
@@ -70,6 +72,11 @@ def video(source):
         time.sleep(0.5)
         duration = player.get_length()
 
+
+#Add all songs to list
+
+filenames = glob.glob('songs/*.mp3')
+#print(filenames)
 
 #Auth with Twitch
 print('Authing...')
