@@ -10,7 +10,9 @@ import asyncio
 import vlc
 import time
 import glob
-import gradio
+import sqlite3
+#! Mutagem for mp3 metadata
+#import gradio
 
 #Globals
 PLAYER_ACTIVE = False
@@ -31,8 +33,8 @@ async def auth():
     return twitch
 
 async def redem_callback(data: ChannelPointsCustomRewardRedemptionAddEvent):
-    print(f'{data.event.user_name} redeemed {data.event.reward.title}')
-    video(filenames[0])
+    print(f'{data.event.user_name} redeemed {data.event.reward.title} message {data.event.user_input}')
+    video(filenames[17])
 
 
 async def event_sub_example(twitch):
@@ -73,8 +75,10 @@ def video(source):
         duration = player.get_length()
 
 
-#Add all songs to list
+db = sqlite3.connect("jukequeue.db")
 
+
+#Add all songs to list
 filenames = glob.glob('songs/*.mp3')
 #print(filenames)
 
